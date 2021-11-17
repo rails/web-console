@@ -1,5 +1,5 @@
 <p align=right>
-  <strong>Current version: 4.1.0</strong> | Documentation for:
+  <strong>Current version: 4.2.0</strong> | Documentation for:
   <a href=https://github.com/rails/web-console/tree/v1.0.4>v1.0.4</a>
   <a href=https://github.com/rails/web-console/tree/v2.2.1>v2.2.1</a>
   <a href=https://github.com/rails/web-console/tree/v3.7.0>v3.7.0</a>
