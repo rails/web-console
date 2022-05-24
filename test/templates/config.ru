@@ -20,13 +20,6 @@ map "/html" do
   )
 end
 
-map "/spec" do
-  run WebConsole::Testing::FakeMiddleware.new(
-    req_path_regex: %r{^/spec/(.*)},
-    view_path: TEST_ROOT.join("spec"),
-  )
-end
-
 map "/test" do
   run WebConsole::Testing::FakeMiddleware.new(
     req_path_regex: %r{^/test/(.*)},
