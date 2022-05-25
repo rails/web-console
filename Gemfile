@@ -7,8 +7,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem "rails", github: "rails/rails"
-gem "arel", github: "rails/arel"
 gem "rack", github: "rack/rack"
+gem "rack-session", github: "rack/rack-session"
 
 group :development do
   platform :ruby do
