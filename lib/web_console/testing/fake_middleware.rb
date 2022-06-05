@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "action_view"
+require "action_dispatch" # This is needed to use Mime::Type
 require "web_console"
 require "web_console/testing/helper"
 
