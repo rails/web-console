@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "net/http"
+
 namespace :templates do
   desc "Run tests for templates"
   task test: [ :daemonize, :npm, :rackup, :wait, :mocha, :kill, :exit ]
