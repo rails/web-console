@@ -22,7 +22,7 @@ module WebConsole
       end
 
       def view
-        @view = View.new(@view_path)
+        @view = View.with_empty_template_cache.with_view_paths(@view_path)
       end
 
       private
