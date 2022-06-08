@@ -9,5 +9,6 @@ test/dummy/tmp/
 test/dummy/.sass-cache
 Gemfile.lock
 node_modules/
+package-lock.json
 dist/
 tmp/
