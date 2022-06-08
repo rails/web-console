@@ -12,7 +12,6 @@ namespace :templates do
   runner  = URI.parse("http://#{ENV['IP'] || '127.0.0.1'}:#{ENV['PORT'] || 29292}/html/test_runner.html")
   rackup  = "rackup --host #{runner.host} --port #{runner.port}"
   result  = nil
-  browser = "phantomjs"
 
   def need_to_wait?(uri)
     Net::HTTP.start(uri.host, uri.port) { |http| http.get(uri.path) }
@@ -24,15 +23,8 @@ namespace :templates do
     rackup += " -D --pid #{pid}"
   end
 
-  task npm: [ :phantomjs ] do
+  task :npm do
     Dir.chdir(workdir) { system "npm install --silent" }
-  end
-
-  task :phantomjs do
-    unless system("which #{browser} >/dev/null")
-      browser = "./node_modules/.bin/phantomjs"
-      Dir.chdir(workdir) { system("test -f #{browser} || npm install --silent phantomjs-prebuilt") }
-    end
   end
 
   task :rackup do
@@ -45,7 +37,7 @@ namespace :templates do
   end
 
   task :mocha do
-    Dir.chdir(workdir) { result = system("#{browser} ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js #{runner} dot") }
+    Dir.chdir(workdir) { result = system("npx mocha-headless-chrome -f #{runner} -r dot") }
   end
 
   task :kill do
