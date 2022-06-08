@@ -19,7 +19,10 @@ module WebConsole
       end
 
       def call(env)
-        [ 200, @headers, [ render(req_path(env)) ] ]
+        body = render(req_path(env))
+        @headers["content-length"] = body.bytesize.to_s
+
+        [ 200, @headers, [ body ] ]
       end
 
       def view
