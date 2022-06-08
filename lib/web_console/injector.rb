@@ -13,10 +13,10 @@ module WebConsole
     end
 
     def inject(content)
-      # Set Content-Length header to the size of the current body
+      # Set content-length header to the size of the current body
       # + the extra content. Otherwise the response will be truncated.
-      if @headers["Content-Length"]
-        @headers["Content-Length"] = (@body.bytesize + content.bytesize).to_s
+      if @headers["content-length"]
+        @headers["content-length"] = (@body.bytesize + content.bytesize).to_s
       end
 
       [

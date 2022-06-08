@@ -15,7 +15,7 @@ end
 map "/html" do
   run WebConsole::Testing::FakeMiddleware.new(
     req_path_regex: %r{^/html/(.*)},
-    headers: {"Content-Type" => "text/html"},
+    headers: {"content-type" => "text/html"},
     view_path: TEST_ROOT.join("html"),
   )
 end
@@ -42,19 +42,19 @@ map "/templates" do
 end
 
 map "/mock/repl_sessions/result" do
-  headers = { 'Content-Type' => 'application/json' }
+  headers = { 'content-type' => 'application/json' }
   body = [ { output: '=> "fake-result"\n', context: [ [ :something, :somewhat, :somewhere ] ] }.to_json ]
   run lambda { |env| [ 200, headers, body ] }
 end
 
 map "/mock/repl_sessions/error" do
-  headers = { 'Content-Type' => 'application/json' }
+  headers = { 'content-type' => 'application/json' }
   body = [ { output: 'fake-error-message' }.to_json ]
   run lambda { |env| [ 400, headers, body ] }
 end
 
 map "/mock/repl_sessions/error.txt" do
-  headers = { 'Content-Type' => 'plain/text' }
+  headers = { 'content-type' => 'plain/text' }
   body = [ 'error message' ]
   run lambda { |env| [ 400, headers, body ] }
 end

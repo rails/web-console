@@ -35,8 +35,8 @@ module WebConsole
 
         def headers
           Hash.new.tap do |header_hash|
-            header_hash["Content-Type"] = "#{@response_content_type}; charset=utf-8" unless @response_content_type.nil?
-            header_hash["Content-Length"] = @response_content_length unless @response_content_length.nil?
+            header_hash["content-type"] = "#{@response_content_type}; charset=utf-8" unless @response_content_type.nil?
+            header_hash["content-length"] = @response_content_length unless @response_content_length.nil?
           end
         end
     end
@@ -84,13 +84,13 @@ module WebConsole
       assert_select "#console"
     end
 
-    test "sets correct Content-Length header" do
+    test "sets correct content-length header" do
       Thread.current[:__web_console_binding] = binding
       @app = Middleware.new(Application.new(response_content_length: 7))
 
       get "/", params: nil
 
-      assert_equal(response.body.size, response.headers["Content-Length"].to_i)
+      assert_equal(response.body.size, response.headers["content-length"].to_i)
     end
 
     test "it closes original body if rendering console" do
@@ -121,12 +121,12 @@ module WebConsole
       assert_select "#console", 0
     end
 
-    test "returns X-Web-Console-Session-Id as response header" do
+    test "returns x-web-console-session-id as response header" do
       Thread.current[:__web_console_binding] = binding
 
       get "/", params: nil
 
-      session_id = response.headers["X-Web-Console-Session-Id"]
+      session_id = response.headers["x-web-console-session-id"]
 
       assert_not Session.find(session_id).nil?
     end

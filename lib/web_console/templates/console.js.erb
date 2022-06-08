@@ -935,8 +935,8 @@ REPLConsole.request = function request(method, url, params, callback) {
   var xhr = new REPLConsole.XMLHttpRequest();
 
   xhr.open(method, url, true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+  xhr.setRequestHeader("x-requested-with", "XMLHttpRequest");
   xhr.send(params);
 
   xhr.onreadystatechange = function() {

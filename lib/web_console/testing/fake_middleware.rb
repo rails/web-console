@@ -10,7 +10,7 @@ module WebConsole
     class FakeMiddleware
       I18n.load_path.concat(Dir[Helper.gem_root.join("lib/web_console/locales/*.yml")])
 
-      DEFAULT_HEADERS = { "Content-Type" => "application/javascript" }
+      DEFAULT_HEADERS = { "content-type" => "application/javascript" }
 
       def initialize(opts)
         @headers        = opts.fetch(:headers, DEFAULT_HEADERS)

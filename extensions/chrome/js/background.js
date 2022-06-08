@@ -84,10 +84,10 @@ function initHttpListener() {
   function onResponse(details) {
     var headers = getHeaders(details);
     var sessionId;
-    if (sessionId = headers['X-Web-Console-Session-Id']) {
+    if (sessionId = headers['x-web-console-session-id']) {
       sessions[details.tabId] = {
         sessionId: sessionId,
-        mountPoint: headers['X-Web-Console-Mount-Point'],
+        mountPoint: headers['x-web-console-mount-point'],
         remoteHost: details.url.match(/([^:]+:\/\/[^\/]+)\/?/)[1]
       };
     }

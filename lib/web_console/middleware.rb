@@ -28,8 +28,8 @@ module WebConsole
         status, headers, body = call_app(env)
 
         if (session = Session.from(Thread.current)) && acceptable_content_type?(headers)
-          headers["X-Web-Console-Session-Id"] = session.id
-          headers["X-Web-Console-Mount-Point"] = mount_point
+          headers["x-web-console-session-id"] = session.id
+          headers["x-web-console-mount-point"] = mount_point
 
           template = Template.new(env, session)
           body, headers = Injector.new(body, headers).inject(template.render("index"))
@@ -52,12 +52,12 @@ module WebConsole
     private
 
       def acceptable_content_type?(headers)
-        headers["Content-Type"].to_s.include?("html")
+        headers["content-type"].to_s.include?("html")
       end
 
       def json_response(opts = {})
         status  = opts.fetch(:status, 200)
-        headers = { "Content-Type" => "application/json; charset = utf-8" }
+        headers = { "content-type" => "application/json; charset = utf-8" }
         body    = yield.to_json
 
         [ status, headers, [ body ] ]
