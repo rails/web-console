@@ -3,7 +3,7 @@
 require "test_helper"
 
 module WebConsole
-  class ExcetionMapperTest < ActiveSupport::TestCase
+  class ExceptionMapperTest < ActiveSupport::TestCase
     test "#first tries to find the first application binding" do
       Rails.stubs(:root).returns Pathname(__FILE__).parent
 

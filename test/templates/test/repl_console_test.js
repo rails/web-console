@@ -1,4 +1,4 @@
-suite('REPLCosnole', function() {
+suite('REPLConsole', function() {
   suiteSetup(function() {
     this.stage = document.createElement('div');
     document.body.appendChild(this.stage);
@@ -184,7 +184,7 @@ suite('REPLCosnole', function() {
       c.setInput('some');
 
       setTimeout(function() {
-        c.onKeyDown(TestHelper.KeyDown(TestHelper.KEY_TAB));
+        c.onKeyDown(TestHelper.keyDown(TestHelper.KEY_TAB));
         assert.equal('something', c._input);
       }, 100);
     });
