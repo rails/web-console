@@ -26,7 +26,7 @@ module WebConsole
   end
 
   def self.logger
-    Rails.logger || (@logger ||= ActiveSupport::Logger.new($stderr))
+    (defined?(Rails.logger) && Rails.logger) || (@logger ||= ActiveSupport::Logger.new($stderr))
   end
 end
 
