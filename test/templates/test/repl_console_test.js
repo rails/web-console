@@ -179,13 +179,14 @@ suite('REPLConsole', function() {
       }, 100);
     });
 
-    test('inserts the current word if tab key is pressed', function() {
+    test('inserts the current word if tab key is pressed', function(done) {
       var c = this.console;
       c.setInput('some');
 
       setTimeout(function() {
         c.onKeyDown(TestHelper.keyDown(TestHelper.KEY_TAB));
         assert.equal('something', c._input);
+        done();
       }, 100);
     });
   });
