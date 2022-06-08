@@ -29,7 +29,7 @@ module WebConsole
 
         # extract target path from REQUEST_PATH
         def req_path(env)
-          env["REQUEST_PATH"].match(@req_path_regex)[1]
+          File.basename(env["REQUEST_PATH"].match(@req_path_regex)[1], ".*")
         end
 
         def render(template)
