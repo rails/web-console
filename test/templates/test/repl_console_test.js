@@ -1,4 +1,4 @@
-suite('REPLCosnole', function() {
+suite('REPLConsole', function() {
   suiteSetup(function() {
     this.stage = document.createElement('div');
     document.body.appendChild(this.stage);
@@ -179,13 +179,14 @@ suite('REPLCosnole', function() {
       }, 100);
     });
 
-    test('inserts the current word if tab key is pressed', function() {
+    test('inserts the current word if tab key is pressed', function(done) {
       var c = this.console;
       c.setInput('some');
 
       setTimeout(function() {
-        c.onKeyDown(TestHelper.KeyDown(TestHelper.KEY_TAB));
+        c.onKeyDown(TestHelper.keyDown(TestHelper.KEY_TAB));
         assert.equal('something', c._input);
+        done();
       }, 100);
     });
   });

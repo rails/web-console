@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "action_view"
+require "action_dispatch" # This is needed to use Mime::Type
 require "web_console"
 require "web_console/testing/helper"
 
@@ -9,7 +10,7 @@ module WebConsole
     class FakeMiddleware
       I18n.load_path.concat(Dir[Helper.gem_root.join("lib/web_console/locales/*.yml")])
 
-      DEFAULT_HEADERS = { "Content-Type" => "application/javascript" }
+      DEFAULT_HEADERS = { "content-type" => "application/javascript" }
 
       def initialize(opts)
         @headers        = opts.fetch(:headers, DEFAULT_HEADERS)
@@ -18,18 +19,21 @@ module WebConsole
       end
 
       def call(env)
-        [ 200, @headers, [ render(req_path(env)) ] ]
+        body = render(req_path(env))
+        @headers["content-length"] = body.bytesize.to_s
+
+        [ 200, @headers, [ body ] ]
       end
 
       def view
-        @view = View.new(@view_path)
+        @view = View.with_empty_template_cache.with_view_paths(@view_path)
       end
 
       private
 
         # extract target path from REQUEST_PATH
         def req_path(env)
-          env["REQUEST_PATH"].match(@req_path_regex)[1]
+          File.basename(env["REQUEST_PATH"].match(@req_path_regex)[1], ".*")
         end
 
         def render(template)

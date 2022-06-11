@@ -20,7 +20,7 @@ module WebConsole
         end
 
         def headers
-          { "Content-Type" => "text/html; charset=utf-8" }
+          { "content-type" => "text/html; charset=utf-8" }
         end
 
         def body
