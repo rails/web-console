@@ -30,4 +30,4 @@ module WebConsole
   end
 end
 
-require "web_console/railtie"
+require "web_console/railtie" if defined?(::Rails::Railtie)

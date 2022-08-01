@@ -50,7 +50,7 @@ module WebConsole
         @bindings.find do |binding|
           source_location = SourceLocation.new(binding)
           source_location.path.to_s.start_with?(Rails.root.to_s)
-        end
+        end if defined?(Rails.root) && Rails.root
       end
   end
 end
