@@ -1,3 +1,4 @@
+require "json"
 require "web_console/testing/fake_middleware"
 
 TEST_ROOT = Pathname(__FILE__).dirname

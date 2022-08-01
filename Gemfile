@@ -6,6 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gemspec
 
+gem "json"
 gem "rack", github: "rack/rack"
 gem "rack-session", github: "rack/rack-session"
 
