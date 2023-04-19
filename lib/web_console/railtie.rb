@@ -51,6 +51,10 @@ module WebConsole
       end
     end
 
+    initializer "web_console.deprecator" do |app|
+      app.deprecators[:web_console] = ActiveSupport::Deprecation.new("5.0", "WebConsole")
+    end
+
     initializer "web_console.permissions" do
       permissions = web_console_permissions
       Request.permissions = Permissions.new(permissions)
@@ -63,7 +67,7 @@ module WebConsole
       when config.web_console.allowed_ips
         config.web_console.allowed_ips
       when config.web_console.whitelisted_ips
-        ActiveSupport::Deprecation.warn(<<-MSG.squish)
+        Rails.application.deprecators[:web_console].warn(<<-MSG.squish)
           The config.web_console.whitelisted_ips is deprecated and will be ignored in future release of web_console.
           Please use config.web_console.allowed_ips instead.
         MSG
