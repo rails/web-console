@@ -8,7 +8,7 @@ module WebConsole
     end
 
     # Extracts entire objects which can be called by the current session unless
-    # the inputs is present.
+    # the input is present.
     #
     # Otherwise, it extracts methods and constants of the object specified by
     # the input.
