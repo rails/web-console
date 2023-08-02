@@ -28,6 +28,10 @@ module WebConsole
   def self.logger
     (defined?(Rails.logger) && Rails.logger) || (@logger ||= ActiveSupport::Logger.new($stderr))
   end
+
+  def self.deprecator
+    @deprecator ||= ActiveSupport::Deprecation.new("5.0", "WebConsole")
+  end
 end
 
 require "web_console/railtie"
