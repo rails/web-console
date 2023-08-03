@@ -1,3 +1,29 @@
+function getCookie(name) {
+  var cookieValue = null;
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i].trim();
+    if (cookie.startsWith(name + "=")) {
+      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      break;
+    }
+  }
+  return cookieValue;
+}
+
+function setCookie(name, value, daysToExpire) {
+  var cookieString = name + "=" + encodeURIComponent(value);
+
+  if (daysToExpire) {
+    var expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+    cookieString += "; expires=" + expirationDate.toUTCString();
+  }
+  document.cookie = cookieString;
+}
+
+
 /**
  * Constructor for command storage.
  * It uses localStorage if available. Otherwise fallback to normal JS array.
@@ -8,7 +34,6 @@ function CommandStorage() {
   var hasLocalStorage = typeof window.localStorage !== 'undefined';
   var STORAGE_KEY = "web_console_previous_commands";
   var MAX_STORAGE = 100;
-
   if (hasLocalStorage) {
     this.previousCommands = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     previousCommandOffset = this.previousCommands.length;
@@ -374,6 +399,19 @@ REPLConsole.prototype.install = function(container) {
   addClass(container.getElementsByClassName('button'), 'border-box');
   addClass(consoleActions, 'pos-fixed pos-right');
 
+  var minimizedConsole = document.createElement('div')
+  minimizedConsole.className = 'minimized-console';
+  minimizedConsole.innerText = '</>'
+  document.body.appendChild(minimizedConsole);
+
+  var consoleMinimized = getCookie('console_minimized')
+  if(consoleMinimized === null) {
+    setCookie('console_minimized', 'false', 1);
+  } 
+
+  container.style.display = consoleMinimized === 'true' ? 'none' : 'block';
+  minimizedConsole.style.display = consoleMinimized === 'true' ? 'block' : 'none';
+
   // Make the console resizable.
   function resizeContainer(ev) {
     var startY              = ev.clientY;
@@ -404,6 +442,17 @@ REPLConsole.prototype.install = function(container) {
   function closeContainer(ev) {
     container.parentNode.removeChild(container);
   }
+
+   function minimizeContainer(ev) {
+    var isMinimized = container.style.display === 'none'
+    container.style.display = isMinimized ? 'block' : 'none';
+    minimizedConsole.style.display = isMinimized ? 'none' : 'block';
+    setCookie('console_minimized', isMinimized ? 'false' : 'true', 1);
+  }
+
+  minimizedConsole.addEventListener('click', function(ev) {
+    minimizeContainer(ev);
+  });
 
   var shifted = false;
   function shiftConsoleActions() {
@@ -437,6 +486,7 @@ REPLConsole.prototype.install = function(container) {
 
   findChild(container, 'resizer').addEventListener('mousedown', resizeContainer);
   findChild(consoleActions, 'close-button').addEventListener('click', closeContainer);
+  findChild(consoleActions, 'minimize-button').addEventListener('click', minimizeContainer);
   observer.observe(consoleOuter, { childList: true, subtree: true });
 
   REPLConsole.currentSession = this;
