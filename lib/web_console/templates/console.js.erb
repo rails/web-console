@@ -33,7 +33,7 @@ function CommandStorage() {
   var previousCommandOffset = 0;
   var hasLocalStorage = typeof window.localStorage !== 'undefined';
   var STORAGE_KEY = "web_console_previous_commands";
-  var MAX_STORAGE = 100;
+
   if (hasLocalStorage) {
     this.previousCommands = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     previousCommandOffset = this.previousCommands.length;
