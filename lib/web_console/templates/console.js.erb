@@ -1,29 +1,3 @@
-function getCookie(name) {
-  var cookieValue = null;
-  var cookies = document.cookie.split(";");
-
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i].trim();
-    if (cookie.startsWith(name + "=")) {
-      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-      break;
-    }
-  }
-  return cookieValue;
-}
-
-function setCookie(name, value, daysToExpire) {
-  var cookieString = name + "=" + encodeURIComponent(value);
-
-  if (daysToExpire) {
-    var expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + daysToExpire);
-    cookieString += "; expires=" + expirationDate.toUTCString();
-  }
-  document.cookie = cookieString;
-}
-
-
 /**
  * Constructor for command storage.
  * It uses localStorage if available. Otherwise fallback to normal JS array.
@@ -405,9 +379,9 @@ REPLConsole.prototype.install = function(container) {
   minimizedConsole.innerText = '</>'
   document.body.appendChild(minimizedConsole);
 
-  var consoleMinimized = getCookie('console_minimized')
+  var consoleMinimized = this.getCookie('console_minimized')
   if(consoleMinimized === null) {
-    setCookie('console_minimized', 'false', 1);
+    this.setCookie('console_minimized', 'false', 1);
   } 
 
   container.style.display = consoleMinimized === 'true' ? 'none' : 'block';
@@ -448,7 +422,7 @@ REPLConsole.prototype.install = function(container) {
     var isMinimized = container.style.display === 'none'
     container.style.display = isMinimized ? 'block' : 'none';
     minimizedConsole.style.display = isMinimized ? 'none' : 'block';
-    setCookie('console_minimized', isMinimized ? 'false' : 'true', 1);
+    _this.setCookie('console_minimized', isMinimized ? 'false' : 'true', 1);
   }
 
   minimizedConsole.addEventListener('click', function(ev) {
@@ -543,6 +517,37 @@ REPLConsole.prototype.newPromptBox = function() {
   this.inner.appendChild(promptBox);
   this.scrollToBottom();
 };
+
+/**
+ * Finds the value of cookie with the given name. Returns null if not found.
+ */
+REPLConsole.prototype.getCookie = function(name) {
+  var cookieValue = null;
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i].trim();
+    if (cookie.startsWith(name + "=")) {
+      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      break;
+    }
+  }
+  return cookieValue;
+}
+
+/**
+ * Sets a cookie with the given name and value. If daysToExpire is not
+ */
+REPLConsole.prototype.setCookie = function(name, value, daysToExpire) {
+  var cookieString = name + "=" + encodeURIComponent(value);
+
+  if (daysToExpire) {
+    var expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+    cookieString += "; expires=" + expirationDate.toUTCString();
+  }
+  document.cookie = cookieString;
+}
 
 /**
  * Remove the caret from the prompt box,
