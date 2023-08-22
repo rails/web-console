@@ -35,8 +35,8 @@ module WebConsole
 
         def headers
           Hash.new.tap do |header_hash|
-            header_hash["content-type"] = "#{@response_content_type}; charset=utf-8" unless @response_content_type.nil?
-            header_hash["content-length"] = @response_content_length unless @response_content_length.nil?
+            header_hash[Rack::CONTENT_TYPE] = "#{@response_content_type}; charset=utf-8" unless @response_content_type.nil?
+            header_hash[Rack::CONTENT_LENGTH] = @response_content_length unless @response_content_length.nil?
           end
         end
     end
@@ -90,7 +90,7 @@ module WebConsole
 
       get "/", params: nil
 
-      assert_equal(response.body.size, response.headers["content-length"].to_i)
+      assert_equal(response.body.size, response.headers[Rack::CONTENT_LENGTH].to_i)
     end
 
     test "it closes original body if rendering console" do

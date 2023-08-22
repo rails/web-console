@@ -52,12 +52,12 @@ module WebConsole
     private
 
       def acceptable_content_type?(headers)
-        headers["content-type"].to_s.include?("html")
+        headers[Rack::CONTENT_TYPE].to_s.include?("html")
       end
 
       def json_response(opts = {})
         status  = opts.fetch(:status, 200)
-        headers = { "content-type" => "application/json; charset = utf-8" }
+        headers = { Rack::CONTENT_TYPE => "application/json; charset = utf-8" }
         body    = yield.to_json
 
         [ status, headers, [ body ] ]

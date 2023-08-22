@@ -20,7 +20,7 @@ module WebConsole
         end
 
         def headers
-          { "content-type" => "text/html; charset=utf-8" }
+          { Rack::CONTENT_TYPE => "text/html; charset=utf-8" }
         end
 
         def body
