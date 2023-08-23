@@ -4,8 +4,8 @@ module WebConsole
   class Request < ActionDispatch::Request
     cattr_accessor :permissions, default: Permissions.new
 
-    def permitted?
-      permissions.include?(strict_remote_ip)
+    def permitted?(allow_all_connections_from_any_ip = false)
+      permissions.include?(strict_remote_ip) || allow_all_connections_from_any_ip
     end
 
     def strict_remote_ip

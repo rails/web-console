@@ -60,6 +60,10 @@ module WebConsole
       Request.permissions = Permissions.new(permissions)
     end
 
+    initializer "web_console.allow_from_all" do
+      Middleware.allow_all_connections_from_any_ip = true if config.web_console.allow_from_all
+    end
+
     def web_console_permissions
       case
       when config.web_console.permissions

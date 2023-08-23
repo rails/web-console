@@ -8,6 +8,7 @@ module WebConsole
 
     cattr_accessor :mount_point, default: "/__web_console"
     cattr_accessor :whiny_requests, default: true
+    cattr_accessor :allow_all_connections_from_any_ip, default: false
 
     def initialize(app)
       @app = app
@@ -16,7 +17,7 @@ module WebConsole
     def call(env)
       app_exception = catch :app_exception do
         request = create_regular_or_whiny_request(env)
-        return call_app(env) unless request.permitted?
+        return call_app(env) unless request.permitted?(allow_all_connections_from_any_ip)
 
         if id = id_for_repl_session_update(request)
           return update_repl_session(id, request)

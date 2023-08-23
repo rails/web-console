@@ -46,6 +46,7 @@ module WebConsole
       Thread.current[:__web_console_binding] = nil
       Rails.stubs(:root).returns Pathname(__FILE__).parent
       Request.stubs(:permissions).returns(IPAddr.new("0.0.0.0/0"))
+      Middleware.allow_all_connections_from_any_ip = false
 
       Middleware.mount_point = ""
       @app = Middleware.new(Application.new)
@@ -149,6 +150,19 @@ module WebConsole
       end
 
       assert_select "#console", 0
+    end
+
+    test "can be rendered from any ip when web_console.allow_from_all is true" do
+      Middleware.allow_all_connections_from_any_ip = true
+
+      Thread.current[:__web_console_binding] = binding
+      Request.stubs(:permissions).returns(IPAddr.new("127.0.0.1"))
+
+      silence(:stderr) do
+        get "/", params: nil, headers: { "REMOTE_ADDR" => "1.0.1.0" }
+      end
+
+      assert_select "#console"
     end
 
     test "doesn't render console without a web_console.binding or web_console.exception" do
