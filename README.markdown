@@ -87,6 +87,14 @@ end
 Take a note that IPv4 and IPv6 localhosts are always allowed. This wasn't the
 case in 2.0.
 
+Allow any network address to access the console:
+
+```ruby
+Rails.application.configure do
+  config.web_console.allow_from_all = true
+end
+```
+
 ### config.web_console.whiny_requests
 
 When a console cannot be shown for a given IP address or content type,
