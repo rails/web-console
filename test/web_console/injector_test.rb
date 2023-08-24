@@ -30,9 +30,9 @@ module WebConsole
 
     test "updates the content-length header" do
       body = [ "foo" ]
-      headers = { "content-length" => 3 }
+      headers = { Rack::CONTENT_LENGTH => 3 }
 
-      assert_equal [ [ "foobar" ], { "content-length" => "6" } ], Injector.new(body, headers).inject("bar")
+      assert_equal [ [ "foobar" ], { Rack::CONTENT_LENGTH => "6" } ], Injector.new(body, headers).inject("bar")
     end
   end
 end

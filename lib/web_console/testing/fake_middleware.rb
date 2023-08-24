@@ -10,7 +10,7 @@ module WebConsole
     class FakeMiddleware
       I18n.load_path.concat(Dir[Helper.gem_root.join("lib/web_console/locales/*.yml")])
 
-      DEFAULT_HEADERS = { "content-type" => "application/javascript" }
+      DEFAULT_HEADERS = { Rack::CONTENT_TYPE => "application/javascript" }
 
       def initialize(opts)
         @headers        = opts.fetch(:headers, DEFAULT_HEADERS)
@@ -20,7 +20,7 @@ module WebConsole
 
       def call(env)
         body = render(req_path(env))
-        @headers["content-length"] = body.bytesize.to_s
+        @headers[Rack::CONTENT_LENGTH] = body.bytesize.to_s
 
         [ 200, @headers, [ body ] ]
       end
