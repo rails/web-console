@@ -1,5 +1,5 @@
 <p align=right>
-  <strong>Current version: 4.2.0</strong> | Documentation for:
+  <strong>Current version: 4.2.1</strong> | Documentation for:
   <a href=https://github.com/rails/web-console/tree/v1.0.4>v1.0.4</a>
   <a href=https://github.com/rails/web-console/tree/v2.2.1>v2.2.1</a>
   <a href=https://github.com/rails/web-console/tree/v3.7.0>v3.7.0</a>
@@ -186,7 +186,7 @@ Make sure your configuration lives in `config/environments/development.rb`.
 [Hailey Somerville]: https://github.com/haileys
 [John Mair]: https://github.com/banister
 [Charles Oliver Nutter]: https://github.com/headius
-[templates]: https://github.com/rails/web-console/tree/master/lib/web_console/templates
+[templates]: https://github.com/rails/web-console/tree/main/lib/web_console/templates
 [rvt]: https://github.com/gsamokovarov/rvt
 [contributors]: https://github.com/rails/web-console/graphs/contributors
 [Passenger on Nginx]: https://www.phusionpassenger.com/library/config/nginx/reference/#passengerstickysessions

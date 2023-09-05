@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## master (unreleased)
+## main (unreleased)
+
+# 4.2.1
+
+* Support to Rails 7.1
+* Support to Rack 3.0
 
 ## 4.2.0
 
