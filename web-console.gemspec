@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   rails_version = ">= 6.0.0"
 
   s.add_dependency "railties",    rails_version
-  s.add_dependency "activemodel", rails_version
   s.add_dependency "actionview",  rails_version
   s.add_dependency "bindex",      ">= 0.4.0"
 end
