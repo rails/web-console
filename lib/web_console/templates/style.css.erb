@@ -36,7 +36,7 @@
   padding: 0;
   margin: 0;
   background: none repeat scroll 0% 0% #333;
-  z-index: 9999;
+  z-index: 2147483647;
 }
 
 .console .console-outer {
@@ -141,6 +141,10 @@
   background: #966;
 }
 
+.console .button.minimize-button:hover {
+  background: #966;
+}
+
 .console .clipboard {
   height: 0px;
   padding: 0px;
@@ -179,4 +183,26 @@
 
 .console.full-screen .close-button {
   display: none;
+}
+
+.console.full-screen .minimize-button {
+  display: none;
+}
+
+.minimized-console {
+  position: fixed;   
+  right: 50%;
+  display: none;
+  bottom: 0px;
+  background-color: #333;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+  padding: 1px 10px;
+  font-size: 11px;
+  color: #fff;
+  z-index: 2147483647;
+}
+
+.minimized-console:hover {
+  background: #966;
 }

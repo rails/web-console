@@ -374,6 +374,19 @@ REPLConsole.prototype.install = function(container) {
   addClass(container.getElementsByClassName('button'), 'border-box');
   addClass(consoleActions, 'pos-fixed pos-right');
 
+  var minimizedConsole = document.createElement('div')
+  minimizedConsole.className = 'minimized-console';
+  minimizedConsole.innerText = '</>'
+  document.body.appendChild(minimizedConsole);
+
+  var consoleMinimized = this.getCookie('console_minimized')
+  if(consoleMinimized === null) {
+    this.setCookie('console_minimized', 'false', 1);
+  } 
+
+  container.style.display = consoleMinimized === 'true' ? 'none' : 'block';
+  minimizedConsole.style.display = consoleMinimized === 'true' ? 'block' : 'none';
+
   // Make the console resizable.
   function resizeContainer(ev) {
     var startY              = ev.clientY;
@@ -404,6 +417,17 @@ REPLConsole.prototype.install = function(container) {
   function closeContainer(ev) {
     container.parentNode.removeChild(container);
   }
+
+   function minimizeContainer(ev) {
+    var isMinimized = container.style.display === 'none'
+    container.style.display = isMinimized ? 'block' : 'none';
+    minimizedConsole.style.display = isMinimized ? 'none' : 'block';
+    _this.setCookie('console_minimized', isMinimized ? 'false' : 'true', 1);
+  }
+
+  minimizedConsole.addEventListener('click', function(ev) {
+    minimizeContainer(ev);
+  });
 
   var shifted = false;
   function shiftConsoleActions() {
@@ -437,6 +461,7 @@ REPLConsole.prototype.install = function(container) {
 
   findChild(container, 'resizer').addEventListener('mousedown', resizeContainer);
   findChild(consoleActions, 'close-button').addEventListener('click', closeContainer);
+  findChild(consoleActions, 'minimize-button').addEventListener('click', minimizeContainer);
   observer.observe(consoleOuter, { childList: true, subtree: true });
 
   REPLConsole.currentSession = this;
@@ -492,6 +517,37 @@ REPLConsole.prototype.newPromptBox = function() {
   this.inner.appendChild(promptBox);
   this.scrollToBottom();
 };
+
+/**
+ * Finds the value of cookie with the given name. Returns null if not found.
+ */
+REPLConsole.prototype.getCookie = function(name) {
+  var cookieValue = null;
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i].trim();
+    if (cookie.startsWith(name + "=")) {
+      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      break;
+    }
+  }
+  return cookieValue;
+}
+
+/**
+ * Sets a cookie with the given name and value. If daysToExpire is not
+ */
+REPLConsole.prototype.setCookie = function(name, value, daysToExpire) {
+  var cookieString = name + "=" + encodeURIComponent(value);
+
+  if (daysToExpire) {
+    var expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+    cookieString += "; expires=" + expirationDate.toUTCString();
+  }
+  document.cookie = cookieString;
+}
 
 /**
  * Remove the caret from the prompt box,
