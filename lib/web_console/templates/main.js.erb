@@ -1,1 +1,30 @@
 REPLConsole.installInto('console');
+
+// Push the page body upwards by the size of the console
+// so it doesn't obscure any of the page content.
+//
+// An event handler is added to adjust the size of the margin
+// whenever the console is resized.
+document.addEventListener('DOMContentLoaded', function() {
+  var consoleElement = document.getElementById('console');
+  var resizerElement = consoleElement.getElementsByClassName('resizer')[0];
+  var consoleContainerElement = document.getElementById('console-container');
+
+  function setConsoleContainerMargin(pixels) {
+    consoleContainerElement.style.marginTop = pixels + 'px';
+  }
+
+  var currentConsoleElementHeight = consoleElement.offsetHeight;
+  setConsoleContainerMargin(currentConsoleElementHeight);
+
+  resizerElement.addEventListener('mousedown', function(event) {
+    function recordConsoleElementHeight(event) {
+      resizerElement.removeEventListener('mouseup', recordConsoleElementHeight);
+
+      var currentConsoleElementHeight = consoleElement.offsetHeight;
+      setConsoleContainerMargin(currentConsoleElementHeight);
+    }
+
+    resizerElement.addEventListener('mouseup', recordConsoleElementHeight);
+  });
+});

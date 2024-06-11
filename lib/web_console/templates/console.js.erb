@@ -661,6 +661,14 @@ REPLConsole.prototype.onTabKey = function() {
   });
 };
 
+REPLConsole.prototype.moveToBeginning = function() {
+  this.setInput(this._input, 0);
+};
+
+REPLConsole.prototype.moveToEnd = function() {
+  this.setInput(this._input, this._input.length);
+};
+
 REPLConsole.prototype.onNavigateHistory = function(offset) {
   var command = this.commandStorage.navigate(offset) || "";
   this.setInput(command);
@@ -680,14 +688,25 @@ REPLConsole.prototype.onKeyDown = function(ev) {
   switch (ev.keyCode) {
     case 65: // Ctrl-A
       if (ev.ctrlKey) {
-        this.setInput(this._input, 0);
+        // this.setInput(this._input, 0);
+        this.moveToBeginning();
         ev.preventDefault();
       }
       break;
 
+    case 36: // 'Home' key
+      this.moveToBeginning();
+      ev.preventDefault();
+      break;
+
+    case 35: // 'End' key
+      this.moveToEnd();
+      ev.preventDefault();
+      break;
+
     case 69: // Ctrl-E
       if (ev.ctrlKey) {
-        this.onTabKey();
+        this.moveToEnd();
         ev.preventDefault();
       }
       break;
@@ -706,18 +725,16 @@ REPLConsole.prototype.onKeyDown = function(ev) {
       }
       break;
 
-    case 69: // Ctrl-E
-      if (ev.ctrlKey) {
-        this.onTabKey();
-        ev.preventDefault();
-      }
-      break;
 
     case 80: // Ctrl-P
       if (! ev.ctrlKey) break;
+      this.onNavigateHistory(-1);
+      break;
 
     case 78: // Ctrl-N
       if (! ev.ctrlKey) break;
+      this.onNavigateHistory(1);
+      break;
 
     case 9: // Tab
       this.onTabKey();
