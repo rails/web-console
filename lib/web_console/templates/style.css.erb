@@ -28,11 +28,12 @@
 }
 
 .console {
+  --console-font-size: .8rem;
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 148px;
+  height: 12rem;
   padding: 0;
   margin: 0;
   background: none repeat scroll 0% 0% #333;
@@ -46,7 +47,7 @@
 
 .console .console-inner {
   font-family: monospace;
-  font-size: 11px;
+  font-size: var(--console-font-size);
   width: 100%;
   height: 100%;
   overflow: unset;
@@ -99,10 +100,19 @@
   color: #096;
 }
 
+.console .console-prompt-box:last-child .console-cursor{
+  border: 1px solid #fefefe;
+}
+
+.console .console-focus .console-prompt-box:last-child .console-cursor {
+  animation: blink 1s step-end infinite;
+}
+
 .console .console-focus .console-cursor {
   background: #fefefe;
   color: #333;
   font-weight: bold;
+  border: none;
 }
 
 .console .resizer {
@@ -124,10 +134,10 @@
   cursor: pointer;
   border-radius: 1px;
   font-family: monospace;
-  font-size: 13px;
-  width: 14px;
-  height: 14px;
-  line-height: 14px;
+  font-size: 1.3rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  line-height: 1.2rem;
   text-align: center;
   color: #ccc;
 }
@@ -179,4 +189,15 @@
 
 .console.full-screen .close-button {
   display: none;
+}
+
+@keyframes blink {
+  from, to {
+    background-color: #fefefe;
+    color: #333;
+  }
+  50% {
+    background-color: transparent;
+    color: #fefefe;
+  }
 }
