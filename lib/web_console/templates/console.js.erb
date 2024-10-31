@@ -706,6 +706,13 @@ REPLConsole.prototype.onKeyDown = function(ev) {
       }
       break;
 
+    case 67: // Ctrl-Shift-C
+      if (ev.ctrlKey && ev.shiftKey) {
+        this.deleteLine();
+        ev.preventDefault();
+      }
+      break;
+
     case 69: // Ctrl-E
       if (ev.ctrlKey) {
         this.onTabKey();
@@ -724,36 +731,79 @@ REPLConsole.prototype.onKeyDown = function(ev) {
       ev.preventDefault();
       break;
 
-    case 13: // Enter key
+      case 13: // Enter key
       this.onEnterKey();
+      this.scrollToBottom();
       ev.preventDefault();
       break;
 
     case 38: // Up arrow
       this.onNavigateHistory(-1);
+      this.scrollToBottom();
       ev.preventDefault();
       break;
 
     case 40: // Down arrow
       this.onNavigateHistory(1);
+      this.scrollToBottom();
       ev.preventDefault();
       break;
 
     case 37: // Left arrow
-      var caretPos = this._caretPos > 0 ? this._caretPos - 1 : this._caretPos;
-      this.setInput(this._input, caretPos);
+      if (ev.ctrlKey) {
+        this.moveCaretToPreviousWord();
+      }else{
+        var caretPos = this._caretPos > 0 ? this._caretPos - 1 : this._caretPos;
+        this.setInput(this._input, caretPos);
+      }
+      this.scrollToBottom();
       ev.preventDefault();
       break;
 
     case 39: // Right arrow
-      var length = this._input.length;
-      var caretPos = this._caretPos < length ? this._caretPos + 1 : this._caretPos;
-      this.setInput(this._input, caretPos);
+      if (ev.ctrlKey) {
+        this.moveCaretToNextWord();
+      } else {
+        var length = this._input.length;
+        var caretPos = this._caretPos < length ? this._caretPos + 1 : this._caretPos;
+        this.setInput(this._input, caretPos);
+      }
+      this.scrollToBottom();
       ev.preventDefault();
       break;
 
-    case 8: // Delete
-      this.deleteAtCurrent();
+    case 76: // Ctrl-L
+      if (ev.ctrlKey) {
+        this.clear();
+        ev.preventDefault();
+      }
+      break;
+
+    case 36:  // Home
+      this.setInput(this._input, 0);
+      ev.preventDefault();
+      break;
+
+    case 35:  // End
+      this.setInput(this._input, this._input.length);
+      ev.preventDefault();
+      break;
+
+    case 46: // Delete
+      if (ev.ctrlKey) {
+        this.deleteWordForward();
+      }else {
+        this.deleteNext();
+      }
+      ev.preventDefault();
+      break;
+
+    case 8: // Backspace
+      if (ev.ctrlKey) {
+        this.deleteWord();
+      } else{
+        this.deleteAtCurrent();
+      }
       ev.preventDefault();
       break;
 
@@ -810,6 +860,32 @@ REPLConsole.prototype.deleteAtCurrent = function() {
 };
 
 /**
+* Delete the next character.
+*/
+REPLConsole.prototype.deleteNext = function() {
+  if (this._caretPos < this._input.length) {
+    var caretPos = this._caretPos;
+    var before = this._input.substring(0, caretPos);
+    var after = this._input.substring(this._caretPos + 1, this._input.length);
+    this.setInput(before + after, caretPos);
+
+    if (!this._input) {
+      this.autocomplete && this.autocomplete.cancel();
+      this.autocomplete = false;
+    }
+  }
+}
+
+REPLConsole.prototype.clear = function() {
+  this.autocomplete && this.autocomplete.cancel();
+  this.autocomplete = false;
+
+  var promptDisplayParentElement = this.promptDisplay.parentElement;
+  this.inner.textContent = '';
+  this.inner.appendChild(promptDisplayParentElement);
+}
+
+/**
  * Deletes the current line.
  */
 REPLConsole.prototype.deleteLine = function() {
@@ -828,17 +904,13 @@ REPLConsole.prototype.deleteLine = function() {
  */
 REPLConsole.prototype.deleteWord = function() {
   if (this._caretPos > 0) {
-    var i = 1, current = this._caretPos;
-    while (this._input[current - i++] == " ");
-
-    var deleteIndex = 0;
-    for (; current - i > 0; i++) {
-      if (this._input[current - i] == " ") {
-        deleteIndex = current - i;
-        break;
-      }
+    var input = this._input, current = this._caretPos, deleteIndex = current;
+    while (deleteIndex > 0 && /\s/.test(input[deleteIndex - 1])) deleteIndex--;
+    if (/\w/.test(input[deleteIndex - 1])) {
+      while (deleteIndex > 0 && /\w/.test(input[deleteIndex - 1])) deleteIndex--;
+    } else {
+      while (deleteIndex > 0 && /[^\w\s]/.test(input[deleteIndex - 1])) deleteIndex--;
     }
-
     var before = this._input.substring(0, deleteIndex);
     var after = this._input.substring(current, this._input.length);
     this.setInput(before + after, deleteIndex);
@@ -849,6 +921,55 @@ REPLConsole.prototype.deleteWord = function() {
     }
   }
 };
+
+REPLConsole.prototype.deleteWordForward = function() {
+  if (this._caretPos < this._input.length) {
+    var i = 0, current = this._caretPos;
+    while (current + i < this._input.length && this._input[current + i] === " ") i++;
+    var deleteIndex;
+    if (current + i < this._input.length && /\w/.test(this._input[current + i])) {
+      while (current + i < this._input.length && /\w/.test(this._input[current + i])) i++;
+      deleteIndex = current + i;
+    } else {
+      while (current + i < this._input.length && /[^\w\s]/.test(this._input[current + i])) i++;
+      deleteIndex = current + i;
+    }
+    var before = this._input.substring(0, current);
+    var after = this._input.substring(deleteIndex, this._input.length);
+    this.setInput(before + after, current);
+    if (!this._input) {
+      this.autocomplete && this.autocomplete.cancel();
+      this.autocomplete = false;
+    }
+  }
+};
+
+REPLConsole.prototype.moveCaretToNextWord = function() {
+  if (this._caretPos < this._input.length) {
+    let current = this._caretPos;
+    while (current < this._input.length && this._input[current] === " ") {
+      current++;
+    }
+    if (current < this._input.length) {
+      const isWordCharacter = /\w/.test(this._input[current]);
+      while (current < this._input.length && /\w/.test(this._input[current]) === isWordCharacter) current++;
+    }
+    this.setInput(this._input, current);
+  }
+};
+
+REPLConsole.prototype.moveCaretToPreviousWord = function() {
+  if (this._caretPos > 0) {
+    let current = this._caretPos;
+    while (current > 0 && this._input[current - 1] === " ") current--;
+    if (current > 0) {
+      const isWordCharacter = /\w/.test(this._input[current - 1]);
+      while (current > 0 && /\w/.test(this._input[current - 1]) === isWordCharacter) current--;
+    }
+    this.setInput(this._input, current);
+  }
+};
+
 
 /**
  * Insert a character at the current position.
