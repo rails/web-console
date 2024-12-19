@@ -9,6 +9,7 @@ module WebConsole
 
       assert_includes permissions, "127.0.0.1"
       assert_includes permissions, "::1"
+      assert_includes permissions, "::ffff:127.0.0.1"
     end
 
     test "permits single IPs" do
@@ -41,7 +42,7 @@ module WebConsole
     end
 
     test "human readable presentation" do
-      assert_includes permit.to_s, "127.0.0.0/127.255.255.255, ::1"
+      assert_includes permit.to_s, "127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255"
     end
 
     private
