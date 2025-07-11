@@ -106,5 +106,65 @@ module WebConsole
 
       assert_equal "=> WebConsole::SessionTest::ValueAwareError\n", session.eval("self")
     end
+
+    # Redis session storage tests
+    test "stores session in Redis when use_redis_storage is true" do
+      Session.use_redis_storage = true
+      
+      session = Session.new([[binding]])
+      
+      # Verify session is stored in Redis
+      redis_data = RedisSessionStorage.find(session.id)
+      assert redis_data
+      assert_equal session.id, redis_data[:id]
+    end
+
+    test "does not store session in Redis when use_redis_storage is false" do
+      Session.use_redis_storage = false
+      
+      session = Session.new([[binding]])
+      
+      # Verify session is not stored in Redis
+      redis_data = RedisSessionStorage.find(session.id)
+      assert_nil redis_data
+    end
+
+    test "can find session from Redis when use_redis_storage is true" do
+      Session.use_redis_storage = true
+      
+      # Create a session that gets stored in Redis
+      original_session = Session.new([[binding]])
+      session_id = original_session.id
+      
+      # Clear in-memory storage to simulate different process
+      Session.inmemory_storage.clear
+      
+      # Find session from Redis
+      found_session = Session.find(session_id)
+      assert found_session
+      assert_equal session_id, found_session.id
+    end
+
+    test "handles Redis connection errors gracefully" do
+      Session.use_redis_storage = true
+      
+      # Mock Redis to raise an error
+      RedisSessionStorage.stubs(:find).raises(Redis::BaseConnectionError.new("Connection failed"))
+      
+      # Should return nil instead of raising an error
+      assert_nil Session.find("some_session_id")
+    end
+
+    test "handles Redis storage errors gracefully" do
+      Session.use_redis_storage = true
+      
+      # Mock Redis to raise an error during storage
+      RedisSessionStorage.stubs(:store).raises(Redis::BaseConnectionError.new("Connection failed"))
+      
+      # Should not raise an error when creating session
+      assert_nothing_raised do
+        Session.new([[binding]])
+      end
+    end
   end
 end

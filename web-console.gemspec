@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency "railties",    rails_version
   s.add_dependency "actionview",  rails_version
   s.add_dependency "bindex",      ">= 0.4.0"
+  s.add_dependency "redis",       ">= 4.0.0"
 end

@@ -81,6 +81,13 @@ module WebConsole
       end
     end
 
+    initializer "web_console.redis_session_storage" do
+      # Configure Redis session storage
+      if config.web_console.key?(:use_redis_storage)
+        Session.use_redis_storage = config.web_console.use_redis_storage
+      end
+    end
+
     initializer "i18n.load_path" do
       config.i18n.load_path.concat(Dir[File.expand_path("../locales/*.yml", __FILE__)])
     end

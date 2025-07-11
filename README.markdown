@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 <p align=right>
   <strong>Current version: 4.2.1</strong> | Documentation for:
   <a href=https://github.com/rails/web-console/tree/v1.0.4>v1.0.4</a>
@@ -129,6 +131,26 @@ Rails.application.configure do
 end
 ```
 
+### config.web_console.use_redis_storage
+
+By default, _Web Console_ uses Redis for session storage to fix the "Session is no longer available in memory" error when using multi-process servers like Puma or Unicorn.
+
+You can disable Redis storage and fall back to in-memory storage:
+
+```ruby
+Rails.application.configure do
+  config.web_console.use_redis_storage = false
+end
+```
+
+When Redis storage is enabled, sessions are stored with a 1-hour TTL. The Redis connection URL can be configured via:
+
+- `Rails.application.secrets[:redis_url]`
+- `ENV['REDIS_CONNECTION_URL_DEV']` (for development)
+- `ENV['REDIS_CONNECTION_URL_PRO']` (for production)
+- `ENV['REDIS_URL']` (fallback)
+- Default: `redis://localhost:6379/0`
+
 ## FAQ
 
 ### Where did /console go?
@@ -146,6 +168,16 @@ while the server is still running. This is because a request may hit a
 different worker (process) that doesn't have the desired session in memory.
 To avoid that, if you use such servers in development, configure them so they
 serve requests only out of one process.
+
+**Redis Session Storage Solution:**
+
+_Web Console_ now supports Redis-based session storage to solve this problem. When enabled (default), sessions are stored in Redis with a 1-hour TTL, allowing sessions to persist across different worker processes.
+
+To use Redis session storage:
+
+1. Ensure Redis is running
+2. Configure your Redis connection URL (see configuration section above)
+3. Redis storage is enabled by default, but you can disable it with `config.web_console.use_redis_storage = false`
 
 #### Passenger
 

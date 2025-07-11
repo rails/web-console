@@ -12,6 +12,7 @@ module WebConsole
   # that.
   class Session
     cattr_reader :inmemory_storage, default: {}
+    cattr_accessor :use_redis_storage, default: true
 
     class << self
       # Finds a persisted session in memory by its id.
@@ -19,7 +20,23 @@ module WebConsole
       # Returns a persisted session if found in memory.
       # Raises NotFound error unless found in memory.
       def find(id)
-        inmemory_storage[id]
+        if use_redis_storage
+          find_in_redis(id)
+        else
+          inmemory_storage[id]
+        end
+      end
+
+      # Find a session in Redis storage
+      def find_in_redis(id)
+        session_data = RedisSessionStorage.find(id)
+        return nil unless session_data
+
+        # Reconstruct the session from stored data
+        reconstruct_session_from_data(session_data)
+      rescue => e
+        WebConsole.logger.error("Failed to retrieve session from Redis: #{e.message}")
+        nil
       end
 
       # Create a Session from an binding or exception in a storage.
@@ -36,6 +53,19 @@ module WebConsole
           new([[binding]])
         end
       end
+
+      private
+
+        def reconstruct_session_from_data(session_data)
+          # Create a new session with the stored exception mappers
+          exception_mappers = session_data[:exception_mappers].map do |mapper_data|
+            ExceptionMapper.new(mapper_data[:exception])
+          end
+
+          session = new(exception_mappers)
+          session.instance_variable_set(:@id, session_data[:id])
+          session
+        end
     end
 
     # An unique identifier for every REPL.
@@ -48,6 +78,7 @@ module WebConsole
       @evaluator         = Evaluator.new(@current_binding = exception_mappers.first.first)
 
       store_into_memory
+      store_into_redis if self.class.use_redis_storage
     end
 
     # Evaluate +input+ on the current Evaluator associated binding.
@@ -75,6 +106,23 @@ module WebConsole
 
       def store_into_memory
         inmemory_storage[id] = self
+      end
+
+      def store_into_redis
+        session_data = {
+          id: @id,
+          exception_mappers: @exception_mappers.map do |mapper|
+            {
+              exception: mapper.exc,
+              backtrace: mapper.exc.backtrace,
+              bindings: mapper.exc.bindings
+            }
+          end
+        }
+
+        RedisSessionStorage.store(@id, session_data)
+      rescue => e
+        WebConsole.logger.error("Failed to store session in Redis: #{e.message}")
       end
   end
 end

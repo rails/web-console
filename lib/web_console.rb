@@ -19,6 +19,7 @@ module WebConsole
   autoload :Middleware
   autoload :Context
   autoload :SourceLocation
+  autoload :RedisSessionStorage
 
   autoload_at "web_console/errors" do
     autoload :Error
