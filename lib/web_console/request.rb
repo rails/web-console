@@ -28,9 +28,17 @@ module WebConsole
           @proxies  = proxies
         end
 
+        # Used by rails <= 8.1
         def filter_proxies(ips)
           ips.reject do |ip|
             @proxies.include?(ip)
+          end
+        end
+
+        # Used by rails > 8.1.
+        def first_non_proxy(ips)
+          ips.find do |ip|
+            !@proxies.include?(ip)
           end
         end
       end
