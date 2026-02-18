@@ -2,6 +2,9 @@
 
 ## main (unreleased)
 
+* Drop Rails 7.2 support
+* Drop Ruby 3.1 support
+
 # 4.2.1
 
 * Support to Rails 7.1
