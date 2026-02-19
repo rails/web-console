@@ -64,7 +64,7 @@ module WebConsole
 
       get "/", params: nil
 
-      assert_select "body > #console"
+      assert_select "body > #console-container > #console"
     end
 
     test "render error_page.js from web_console.exception" do

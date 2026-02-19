@@ -17,9 +17,9 @@ module WebConsole
 
     # Render JavaScript inside a script tag and a closure.
     #
-    # This one lets write JavaScript that will automatically get wrapped in a
-    # script tag and enclosed in a closure, so you don't have to worry for
-    # leaking globals, unless you explicitly want to.
+    # Allows writing JavaScript that will automatically get wrapped in
+    # a script tag and enclosed in a closure, so we don't have to worry about
+    # leaking globals, unless we explicitly want to.
     def render_javascript(template)
       assign(template: template)
       assign(nonce: @env["action_dispatch.content_security_policy_nonce"])

@@ -67,7 +67,7 @@ By default, only requests coming from IPv4 and IPv6 localhosts are allowed.
 `config.web_console.permissions` lets you control which IP's have access to
 the console.
 
-You can allow single IP's or whole networks. Say you want to share your
+You can allow single IPs or whole networks. Say you want to share your
 console with `192.168.0.100`:
 
 ```ruby
