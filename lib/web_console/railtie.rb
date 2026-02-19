@@ -84,5 +84,11 @@ module WebConsole
     initializer "i18n.load_path" do
       config.i18n.load_path.concat(Dir[File.expand_path("../locales/*.yml", __FILE__)])
     end
+
+    initializer 'web_console.last_evaluation_variable' do
+      if last_evaluation_variable = config.web_console.last_evaluation_variable
+        Evaluator.last_evaluation_variable = last_evaluation_variable
+      end
+    end
   end
 end

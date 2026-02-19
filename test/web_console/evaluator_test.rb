@@ -66,6 +66,22 @@ module WebConsole
       END
     end
 
+    test "Evaluator preserve the last value in the _ variable" do
+      @repl.class.last_evaluation_variable = "_"
+      assert_equal "=> 42\n", @repl.eval("foo = 42")
+      assert_equal "=> 42\n", @repl.eval("_")
+      assert_equal "=> 50\n", @repl.eval("_ + 8")
+      assert_equal "=> 50\n", @repl.eval("_")
+    end
+
+    test "last evaluation variable can be configured" do
+      assert_equal "=> 42\n", @repl.eval("foo = 42")
+      assert_equal "=> 42\n", @repl.eval("_")
+      @repl.class.last_evaluation_variable = "$_last_value"
+      assert_equal "=> 42\n", @repl.eval("foo = 42")
+      assert_equal "=> 42\n", @repl.eval("$_last_value")
+    end
+
     private
 
       def current_trace
