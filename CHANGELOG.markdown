@@ -2,6 +2,10 @@
 
 ## main (unreleased)
 
+# 4.3.0
+
+* [#342](https://github.com/rails/web-console/pull/342) Always permit IPv4-mapped IPv6 loopback addresses ([@zunda]).
+* Fixed Rails 8.2.0.alpha support
 * Drop Rails 7.2 support
 * Drop Ruby 3.1 support
 
@@ -194,3 +198,4 @@ go to 3.1.0 instead.
 [@p8]: https://github.com/p8
 [@voxik]: https://github.com/voxik
 [@ryanwood]: https://github.com/ryanwood
+[@zunda]: https://github.com/zunda
