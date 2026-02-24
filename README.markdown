@@ -84,6 +84,13 @@ Rails.application.configure do
 end
 ```
 
+If you want to allow multiple networks:
+```ruby
+Rails.application.configure do
+  config.web_console.permissions = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+end
+```
+
 Take a note that IPv4 and IPv6 localhosts are always allowed. This wasn't the
 case in 2.0.
 
